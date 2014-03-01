@@ -15,17 +15,17 @@ int main(int argc, char** argv)
     }
     
     Mat image;
-    image=imread(argv[1], CV_LOAD_IMAGE_COLOR);
+    image=imread(argv[1], CV_LOAD_IMAGE_COLOR); // Lectura del archivo
     
-    if(!image.data)
+    if(!image.data)                             // Chequea que sea un dato valido
     {
         cout<<"no se puede abrir o encontrar la imagen"<< endl;
         return -1;
     }
     
-    namedWindow("Imagen Cruda", CV_WINDOW_AUTOSIZE);
-    imshow("Imagen Cruda", image);
-    waitKey(0);
+    namedWindow("Imagen Cruda", CV_WINDOW_AUTOSIZE);// Crea una ventana
+    imshow("Imagen Cruda", image);                      // Muestra nuestra imagen dentro de esta.
+    waitKey(0);                                 // Espera por una tecla
     return 0;
 
 
