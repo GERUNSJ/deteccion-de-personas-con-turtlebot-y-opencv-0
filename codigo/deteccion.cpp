@@ -23,8 +23,8 @@ int main(int argc, char** argv)
         return -1;
     }
     
-    namedWindow("Imagen Cruda", CV_WINDOW_AUTOSIZE);// Crea una ventana
-    imshow("Imagen Cruda", image);                      // Muestra nuestra imagen dentro de esta.
+    namedWindow("Imagen Original", CV_WINDOW_AUTOSIZE);// Crea una ventana
+    imshow("Imagen Original", image);                      // Muestra nuestra imagen dentro de esta.
     waitKey(0);                                 // Espera por una tecla
     return 0;
 
