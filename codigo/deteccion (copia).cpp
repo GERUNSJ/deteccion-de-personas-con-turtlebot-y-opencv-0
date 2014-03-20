@@ -44,31 +44,29 @@ void Sharpen2(const Mat &myImage, Mat &Result)
 void Sharpen(const Mat &myImage, Mat &Result)
 {
    //CV_Assert(myImage.depth() == CV_8U); // accept only uchar images
-    cout<<"el tipo de la imagen es:"<<myImage.type()<<"\n";
-    cout<<"el numero de canales de la imagen es:"<<myImage.channels()<<"\n";
     
     Result.create(myImage.size(), myImage.type());
-    const uint nChannels = myImage.channels();
+    const int nChannels = myImage.channels();
     
     for (int j= 1; j < myImage.rows - 1; ++j)
     {
             
-            //const int* previous = myImage.ptr<int>(j - 1);
-            const uint* current = myImage.ptr<uint>(j);
-            //const int* next= myImage.ptr<int>(j + 1);
+            const int* previous = myImage.ptr<int>(j - 1);
+            const int* current = myImage.ptr<int>(j);
+            const int* next= myImage.ptr<int>(j + 1);
             
-            uint* output = Result.ptr<uint>(j);
-            for (uint i = nChannels; i < nChannels * (myImage.cols - 1); ++i) 
+            int* output = Result.ptr<int>(j);
+            
+            for (int i = nChannels; i < nChannels * (myImage.cols - 1); ++i) 
             {
-                if(((uint)current[i]>400000))
+                if(current[i]>5000)
                 {
-                    *output =0;
+                    *output++ =0;
                 }
                 else
                 {
-                        *output = (current[i]);
+                *output++ = saturate_cast<int>(-4 * current[i]+ current[i - nChannels] + current[i + nChannels] + previous[i] + next[i]);
                 }
-                *output++;
                 /*o=[0 -1 0
                      -1 5 -1
                      0  -1 0]
@@ -108,7 +106,7 @@ void filter(const Mat &myImage, Mat &Result)
     
     
     //defino el kernel 
-    kernel = Mat(3,3, CV_16U, m);
+    kernel = Mat(3,3, CV_32F, m);
         
     /// Apply filter
     filter2D(myImage, Result, ddepth , kernel, anchor, delta, BORDER_DEFAULT );
@@ -123,16 +121,13 @@ int main(int argc, char** argv)
     }
     
     Mat image;
-    image=imread(argv[1], 0); // Lectura del archivo
+    image=imread(argv[1], CV_LOAD_IMAGE_COLOR); // Lectura del archivo
     
     if(!image.data)                             // Chequea que sea un dato valido
     {
         cout<<"no se puede abrir o encontrar la imagen"<< endl;
         return -1;
     }
-    
-    cout<<"trolo";
-    cout<<"el tipo de la imagen es:"<<image.type()<<"\n";
     Mat Resultado;
     Mat Filtrada;
     Mat enfoque;
