@@ -137,11 +137,16 @@ int main(int argc, char** argv)
     Mat Filtrada;
     Mat enfoque;
     Mat Casero;
+    Mat median;
     Sharpen2(image,enfoque);
     filter(enfoque, Filtrada);
     Sharpen(Filtrada, Resultado);
     //filter(image, Filtrada);
     Sharpen(image,Casero);
+    medianBlur(image, median,5);
+    medianBlur(median, median,5);
+    medianBlur(median, median,5);
+    medianBlur(median, median,5);
     
     namedWindow("Imagen Original", CV_WINDOW_AUTOSIZE);// Crea una ventana
     imshow("Imagen Original", image);                      // Muestra nuestra imagen dentro de esta.
@@ -151,6 +156,8 @@ int main(int argc, char** argv)
     imshow("Imagen Realce Linea", Resultado);                      // Muestra nuestra imagen Realzada dentro de esta.
     namedWindow("Imagen filtro Casero", CV_WINDOW_AUTOSIZE);// Crea una ventana de Realce Linea
     imshow("Imagen filtro Casero", Casero);               
+    namedWindow("Imagen median filter", CV_WINDOW_AUTOSIZE);// Crea una ventana de Realce Linea
+    imshow("Imagen median filter", median);               
     waitKey(0);                                 // Espera por una tecla
     return 0;
 
