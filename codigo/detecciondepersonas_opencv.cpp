@@ -8,13 +8,16 @@
 
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
+#include <opencv2/imgproc/imgproc.hpp>
 #include <iostream>
+#include <histograma.hpp>
 
 using namespace cv;
 using namespace std;
 
-f_filtrado_histograma(const Mat& histograma, Mat& histograma_filtrado);
-f_histograma(const Mat& img, Mat& histograma);
+//void f_filtrado_histograma(const Mat& histograma, Mat& histograma_filtrado);
+//void f_histograma(const Mat& img);
+
 
 int main( int argc, char** argv )
 {
@@ -27,8 +30,8 @@ int main( int argc, char** argv )
      return -1;
     }
 
-    cv::Mat original;
-    original = cv::imread(argv[1], -1);   		//El segundo argumento indica que la imagen se leera
+    Mat original;
+    original = imread(argv[1], 0);   		//El segundo argumento indica que la imagen se leera
     											//tal como viene, tenga los canales que tenga.
 
     if(! original.data )                       	// Check for invalid input
@@ -44,12 +47,12 @@ int main( int argc, char** argv )
  * 				CREACIÓN DE VENTANAS
  ---------------------------------------------------------------------*/
 
-    cv::namedWindow( "ORIGINAL", cv::WINDOW_AUTOSIZE );	// Create a window for display.
-    cv::namedWindow( "HISTOGRAMA", cv::WINDOW_AUTOSIZE );
-    cv::namedWindow( "PICOS_HISTOGRAMA", cv::WINDOW_AUTOSIZE );
-    cv::namedWindow( "HISTOGRAMA", cv::WINDOW_AUTOSIZE );
-    cv::namedWindow( "HISTOGRAMA", cv::WINDOW_AUTOSIZE );
-    cv::namedWindow( "HISTOGRAMA", cv::WINDOW_AUTOSIZE );
+    namedWindow( "ORIGINAL", WINDOW_AUTOSIZE );	// Create a window for display.
+    namedWindow( "HISTOGRAMA", WINDOW_AUTOSIZE );
+    namedWindow( "PICOS_HISTOGRAMA", WINDOW_AUTOSIZE );
+    namedWindow( "HISTOGRAMA", WINDOW_AUTOSIZE );
+    namedWindow( "HISTOGRAMA", WINDOW_AUTOSIZE );
+    namedWindow( "HISTOGRAMA", WINDOW_AUTOSIZE );
 
 //---------------------------------------------------------------------
 //---------------------------------------------------------------------
@@ -59,10 +62,10 @@ int main( int argc, char** argv )
  * 				CREACIÓN DE MATRICES
  ---------------------------------------------------------------------*/
 
-    cv::Mat histograma;
-    cv::Mat histograma_img;
-    cv::Mat histograma_filtrado;
-    cv::Mat
+    //Mat histograma;
+    //Mat histograma_img;
+    //Mat histograma_filtrado;
+
 
 //---------------------------------------------------------------------
 //---------------------------------------------------------------------
@@ -80,19 +83,19 @@ int main( int argc, char** argv )
  *
  */
 
-    f_histograma(original, histograma);
+ //   f_histograma(original, histograma);
 
 
-    f_filtrado_histograma(histograma, histograma_filtrado);
+  //  f_filtrado_histograma(histograma, histograma_filtrado);
 
-
+    f_histograma(original);
 
 
 
 
     imshow( "ORIGINAL", original );                   	// Show our image inside it.
 
-    cv::waitKey(0);                                    	// Wait for a keystroke in the window
+    waitKey(0);                                    	// Wait for a keystroke in the window
     return 0;
 }
 
