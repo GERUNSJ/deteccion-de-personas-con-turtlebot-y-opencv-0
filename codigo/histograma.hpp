@@ -16,7 +16,7 @@ void f_histograma(const Mat& img)
 {
     // Initialize parameters
     int histSize = 256;    // bin size
-    float range[] = { 0, 255 };
+    float range[] = { 0, 65535 };
     const float *ranges[] = { range };
 
     // Calculate histogram
