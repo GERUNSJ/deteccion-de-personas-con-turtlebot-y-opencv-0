@@ -11,6 +11,7 @@
 #include <opencv2/imgproc/imgproc.hpp>
 #include <iostream>
 #include <histograma.hpp>
+#include <cstdio>
 
 using namespace cv;
 using namespace std;
@@ -41,6 +42,7 @@ string type2str(int type) {
 
   return r;
 }
+
 //----------------------------------------
 
 int main( int argc, char** argv )
@@ -60,12 +62,17 @@ int main( int argc, char** argv )
 
     if(! original.data )                       	// Check for invalid input
     {
-        cout <<  "No se pudo abrir o encontrar la imagen." << std::endl ;
+        cout <<  "\nNo se pudo abrir o encontrar la imagen." << std::endl ;
         return -1;
     }
 
     string tipo = type2str(original.type());
-    cout << "La imagen abierta es del tipo " << tipo << "\n" ;
+    cout << "\nLa imagen abierta es del tipo " << tipo << "\n" ;
+
+    if(original.channels() != 1)
+    {
+    	cvtColor(original, original, CV_RGB2GRAY);
+    }
 //---------------------------------------------------------------------
 //---------------------------------------------------------------------
 
@@ -78,9 +85,7 @@ int main( int argc, char** argv )
     namedWindow( "NORMALIZADA", WINDOW_AUTOSIZE);
     namedWindow( "HISTOGRAMA", WINDOW_AUTOSIZE );
     namedWindow( "PICOS_HISTOGRAMA", WINDOW_AUTOSIZE );
-    namedWindow( "HISTOGRAMA", WINDOW_AUTOSIZE );
-    namedWindow( "HISTOGRAMA", WINDOW_AUTOSIZE );
-    namedWindow( "HISTOGRAMA", WINDOW_AUTOSIZE );
+
 
 //---------------------------------------------------------------------
 //---------------------------------------------------------------------
@@ -91,7 +96,7 @@ int main( int argc, char** argv )
  ---------------------------------------------------------------------*/
 
     Mat normalizada;
-    //Mat histograma;
+    Mat histograma;
     //Mat histograma_img;
     //Mat histograma_filtrado;
 
@@ -103,7 +108,43 @@ int main( int argc, char** argv )
  * 				NORMALIZACIÓN
  ---------------------------------------------------------------------*/
 
-    normalize(original, normalizada, 0, 65535, NORM_MINMAX, -1);
+/*
+    cout << "\n Antes de la normalizacion\n";
+
+    long int i = 0;
+    long int j = 0;
+    long int nn = 0;
+    int a = original.type();
+    cout << "\n el tipo es " << original.type();
+
+	for( i = 0; i < original.rows; i++)
+	{
+		for (j = 0; j < original.cols; j++)
+			{
+				if(original.at<int>(i,j)!=0)
+				{
+				//printf("%ld  ",(long int)original.at<int>(i));
+				nn++;
+				}
+			}
+	}
+	printf("\n\n i*j = %ld\n\n",i*j);
+	printf("\nHay %ld valores no nulos.\n\n",nn);
+*/
+
+    cout << "\n\nANTES DE NORMALIZAR:\n";
+    f_histograma_log(original,histograma);
+    mostrar_histograma(histograma, (char*)"HISTOGRAMA");
+
+
+    if(original.depth() == CV_8U)
+    {
+        normalize(original, normalizada, 0, 255, NORM_MINMAX, -1);
+    }
+    else if (original.depth() == CV_16U)
+    {
+        normalize(original, normalizada, 0, 65535, NORM_MINMAX, -1);
+    }
     //original.convertTo(normalizada,CV_16UC1,65535.0/(10000 - 0), -0 * 65535.0/(10000 - 0));
     imshow("NORMALIZADA",normalizada);
 
@@ -127,7 +168,10 @@ int main( int argc, char** argv )
 
   //  f_filtrado_histograma(histograma, histograma_filtrado);
 
-    f_histograma(normalizada);
+    cout << "\n\nDESPUES DE NORMALIZAR: \n";
+
+    f_histograma_log(normalizada,histograma);
+    mostrar_histograma(histograma, (char*)"HISTOGRAMA");
 
 
 
