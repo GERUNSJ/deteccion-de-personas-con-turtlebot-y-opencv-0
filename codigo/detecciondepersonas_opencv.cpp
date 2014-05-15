@@ -11,15 +11,14 @@
 #include <opencv2/imgproc/imgproc.hpp>
 #include <iostream>
 #include <histograma.hpp>
+#include <suavizar_histograma.hpp>
 #include <cstdio>
+
 
 using namespace cv;
 using namespace std;
 
-//void f_filtrado_histograma(const Mat& histograma, Mat& histograma_filtrado);
-//void f_histograma(const Mat& img);
-
-
+//--------------------------------------------------------------
 string type2str(int type) {
   string r;
 
@@ -45,6 +44,9 @@ string type2str(int type) {
 
 //----------------------------------------
 
+
+
+
 int main( int argc, char** argv )
 {
 /*---------------------------------------------------------------------
@@ -69,6 +71,7 @@ int main( int argc, char** argv )
     string tipo = type2str(original.type());
     cout << "\nLa imagen abierta es del tipo " << tipo << "\n" ;
 
+    //Conversión a un canal
     if(original.channels() != 1)
     {
     	cvtColor(original, original, CV_RGB2GRAY);
@@ -84,6 +87,7 @@ int main( int argc, char** argv )
     namedWindow( "ORIGINAL", WINDOW_AUTOSIZE );	// Create a window for display.
     namedWindow( "NORMALIZADA", WINDOW_AUTOSIZE);
     namedWindow( "HISTOGRAMA", WINDOW_AUTOSIZE );
+    namedWindow( "HISTOGRAMA_SUAVIZADO", WINDOW_AUTOSIZE);
     namedWindow( "PICOS_HISTOGRAMA", WINDOW_AUTOSIZE );
 
 
@@ -97,8 +101,7 @@ int main( int argc, char** argv )
 
     Mat normalizada;
     Mat histograma;
-    //Mat histograma_img;
-    //Mat histograma_filtrado;
+    Mat histograma_suavizado;
 
 
 //---------------------------------------------------------------------
@@ -149,6 +152,13 @@ int main( int argc, char** argv )
     }
     //original.convertTo(normalizada,CV_16UC1,65535.0/(10000 - 0), -0 * 65535.0/(10000 - 0));
     imshow("NORMALIZADA",normalizada);
+    waitKey(0);
+
+
+    //Conversión a 8 bits:
+    normalizada.convertTo(normalizada,CV_8UC1,255.0/65535, -0);
+    imshow("NORMALIZADA",normalizada);
+
 
 
 //---------------------------------------------------------------------
@@ -188,6 +198,17 @@ int main( int argc, char** argv )
     mostrar_histograma(histograma, (char*)"HISTOGRAMA");
 
 
+/*---------------------------------------------------------------------
+ * 				SUAVIZADO DE HISTOGRAMA
+ ---------------------------------------------------------------------*/
+
+    histograma_suavizado = histograma;
+    suavizar_histograma(histograma_suavizado, 3);
+    suavizar_histograma(histograma_suavizado, 3);
+    mostrar_histograma(histograma_suavizado, (char*)"HISTOGRAMA_SUAVIZADO");
+
+//---------------------------------------------------------------------
+//---------------------------------------------------------------------
 
 
     imshow( "ORIGINAL", original );                   	// Show our image inside it.
