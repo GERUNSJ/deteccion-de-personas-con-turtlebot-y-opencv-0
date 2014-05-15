@@ -13,14 +13,15 @@ using namespace std;
 
 //#include <suavizar_histograma.cpp>
 
-void suavizar_histograma(Mat& histograma);
+void suavizar_histograma(Mat& histograma, int ancho_filtro);
 
 
 
-void suavizar_histograma(Mat& histograma)
+void suavizar_histograma(Mat& histograma, int ancho_filtro)
 {
 	//C++: void blur(InputArray src, OutputArray dst, Size ksize, Point anchor=Point(-1,-1), int border-type=BORDER_DEFAULT )
-	blur(histograma, histograma, Size(1,5), Point(-1,-1), BORDER_REPLICATE);	//Size(columnas,filas)
+	blur(histograma, histograma, Size(1,ancho_filtro), Point(-1,-1), BORDER_REPLICATE);	//Size(columnas,filas)
+	//BORDER_REPLICATE supone que los valores de borde se mantienen constantes.
 }
 
 
