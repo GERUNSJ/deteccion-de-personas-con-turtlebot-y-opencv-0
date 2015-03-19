@@ -4,7 +4,7 @@
  *  Created on: 10/04/2014
  *      Author: pablo
  */
-
+//#include <iostream>
 
 #include <cstdio>
 
@@ -322,9 +322,9 @@ void mostrar_histograma(const Mat& hist_original, char* nombreventana)
     calcHist( &img, 1, 0, Mat(), hist, 1, &histSize, ranges, true, false );
     //calcHist( &bgr_planes[0], 1, 0, Mat(), b_hist, 1, &histSize, &histRange, uniform, accumulate );
 
-    cout << "zsdsdfgsrfghdfh" << std::endl;
+    cout << "zsdsdfgsrfghdfh" << endl;
 
-    cout << "\nantes del log" << std::endl;
+    cout << "\nantes del log" << endl;
     for( int h = 0; h < histSize; h++ )
          {
             float binVal = hist.at<float>(h);
@@ -342,7 +342,7 @@ void mostrar_histograma(const Mat& hist_original, char* nombreventana)
 
     // Show the calculated histogram in command window
 
-    cout << "\ndespues del log" << std::endl;
+    cout << "\ndespues del log" << endl;
 
     for( int h = 0; h < histSize; h++ )
          {

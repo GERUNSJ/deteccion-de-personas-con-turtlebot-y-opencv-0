@@ -13,12 +13,16 @@
 #include <histograma.hpp>
 #include <suavizar_histograma.hpp>
 #include <cstdio>
-
+#include <vector>
+#include <cstdlib>
+#include <Pintar.h>
+#include <stdlib.h> 
+#include <time.h> 
 
 using namespace cv;
 using namespace std;
 
-//--------------------------------------------------------------
+--------------------------------------------
 string type2str(int type) {
   string r;
 
@@ -41,11 +45,7 @@ string type2str(int type) {
 
   return r;
 }
-
 //----------------------------------------
-
-
-
 
 int main( int argc, char** argv )
 {
@@ -54,13 +54,12 @@ int main( int argc, char** argv )
  ---------------------------------------------------------------------*/
     if( argc != 2)
     {
-     std::cout << "Uso: detecciondepersonas_opencv nombredeimagen" << std::endl;
+     cout << "Uso: detecciondepersonas_opencv nombredeimagen" << endl;
      return -1;
     }
 
-    Mat original;
-    original = imread(argv[1], -1);   		//El segundo argumento indica que la imagen se leera
-    											//tal como viene, tenga los canales que tenga.
+    Mat original = imread(argv[1], -1);   		//El segundo argumento indica que la imagen se leera
+    original.convertTo(original, CV_8UC1, 255.0/65535,0);											//tal como viene, tenga los canales que tenga.
 
     if(! original.data )                       	// Check for invalid input
     {
@@ -69,13 +68,9 @@ int main( int argc, char** argv )
     }
 
     string tipo = type2str(original.type());
-    cout << "\nLa imagen abierta es del tipo " << tipo << "\n" ;
-
-    //Conversión a un canal
-    if(original.channels() != 1)
-    {
-    	cvtColor(original, original, CV_RGB2GRAY);
-    }
+    cout << "La imagen abierta es del tipo " << tipo << "\n" ;
+//    if(original.channels()!= 1)
+//        cvtColor(original,original,CV_RGB2GRAY);
 //---------------------------------------------------------------------
 //---------------------------------------------------------------------
 
@@ -84,12 +79,14 @@ int main( int argc, char** argv )
  * 				CREACIÓN DE VENTANAS
  ---------------------------------------------------------------------*/
 
-    namedWindow( "ORIGINAL", WINDOW_AUTOSIZE );	// Create a window for display.
+    namedWindow( "ORIGINAL", CV_WINDOW_AUTOSIZE );	// Create a window for display.
     namedWindow( "NORMALIZADA", WINDOW_AUTOSIZE);
     namedWindow( "HISTOGRAMA", WINDOW_AUTOSIZE );
-    namedWindow( "HISTOGRAMA_SUAVIZADO", WINDOW_AUTOSIZE);
     namedWindow( "PICOS_HISTOGRAMA", WINDOW_AUTOSIZE );
-
+    namedWindow( "HISTOGRAMA", WINDOW_AUTOSIZE );
+    namedWindow( "HISTOGRAMA", WINDOW_AUTOSIZE );
+    namedWindow( "HISTOGRAMA", WINDOW_AUTOSIZE );
+    namedWindow( "PINTADA", CV_WINDOW_AUTOSIZE );
 
 //---------------------------------------------------------------------
 //---------------------------------------------------------------------
@@ -103,11 +100,13 @@ int main( int argc, char** argv )
     Mat histograma;
     Mat histograma_suavizado;
 
+    Mat pintada;
+    Mat original_color;
+    cvtColor(original, original_color, CV_GRAY2BGR);
+    pintada=original_color.clone();
 
 //---------------------------------------------------------------------
 //---------------------------------------------------------------------
-
-
 
 /*---------------------------------------------------------------------
  * 				NORMALIZACIÓN
@@ -152,29 +151,10 @@ int main( int argc, char** argv )
     }
     //original.convertTo(normalizada,CV_16UC1,65535.0/(10000 - 0), -0 * 65535.0/(10000 - 0));
     imshow("NORMALIZADA",normalizada);
-    waitKey(0);
-
-
-    //Conversión a 8 bits:
-    normalizada.convertTo(normalizada,CV_8UC1,255.0/65535, -0);
-    imshow("NORMALIZADA",normalizada);
-
 
 
 //---------------------------------------------------------------------
 //---------------------------------------------------------------------
-
-
-
-/*---------------------------------------------------------------------
- * 				NORMALIZACIÓN
- ---------------------------------------------------------------------*/
-
-
-//---------------------------------------------------------------------
-//---------------------------------------------------------------------
-
-
 /*---------------------------------------------------------------------
  * 				--
  ---------------------------------------------------------------------*/
@@ -192,7 +172,8 @@ int main( int argc, char** argv )
 
   //  f_filtrado_histograma(histograma, histograma_filtrado);
 
-    cout << "\n\nDESPUES DE NORMALIZAR: \n";
+    f_histograma(normalizada);
+  cout << "\n\nDESPUES DE NORMALIZAR: \n";
 
     f_histograma_log(normalizada,histograma);
     mostrar_histograma(histograma, (char*)"HISTOGRAMA");
