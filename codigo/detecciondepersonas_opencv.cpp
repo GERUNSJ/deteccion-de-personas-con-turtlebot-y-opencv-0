@@ -11,6 +11,11 @@
 #include <opencv2/imgproc/imgproc.hpp>
 #include <iostream>
 #include <histograma.hpp>
+#include <vector>
+#include <cstdlib>
+#include <Pintar.h>
+#include <stdlib.h> 
+#include <time.h> 
 
 using namespace cv;
 using namespace std;
@@ -50,22 +55,23 @@ int main( int argc, char** argv )
  ---------------------------------------------------------------------*/
     if( argc != 2)
     {
-     std::cout << "Uso: detecciondepersonas_opencv nombredeimagen" << std::endl;
+     cout << "Uso: detecciondepersonas_opencv nombredeimagen" << endl;
      return -1;
     }
 
-    Mat original;
-    original = imread(argv[1], -1);   		//El segundo argumento indica que la imagen se leera
-    											//tal como viene, tenga los canales que tenga.
+    Mat original = imread(argv[1], -1);   		//El segundo argumento indica que la imagen se leera
+    original.convertTo(original, CV_8UC1, 255.0/65535,0);											//tal como viene, tenga los canales que tenga.
 
     if(! original.data )                       	// Check for invalid input
     {
-        cout <<  "No se pudo abrir o encontrar la imagen." << std::endl ;
+        cout <<  "No se pudo abrir o encontrar la imagen." << endl ;
         return -1;
     }
 
     string tipo = type2str(original.type());
     cout << "La imagen abierta es del tipo " << tipo << "\n" ;
+//    if(original.channels()!= 1)
+//        cvtColor(original,original,CV_RGB2GRAY);
 //---------------------------------------------------------------------
 //---------------------------------------------------------------------
 
@@ -74,17 +80,18 @@ int main( int argc, char** argv )
  * 				CREACIÓN DE VENTANAS
  ---------------------------------------------------------------------*/
 
-    namedWindow( "ORIGINAL", WINDOW_AUTOSIZE );	// Create a window for display.
-    namedWindow( "NORMALIZADA", WINDOW_AUTOSIZE);
-    namedWindow( "HISTOGRAMA", WINDOW_AUTOSIZE );
-    namedWindow( "PICOS_HISTOGRAMA", WINDOW_AUTOSIZE );
-    namedWindow( "HISTOGRAMA", WINDOW_AUTOSIZE );
-    namedWindow( "HISTOGRAMA", WINDOW_AUTOSIZE );
-    namedWindow( "HISTOGRAMA", WINDOW_AUTOSIZE );
+    namedWindow( "ORIGINAL", CV_WINDOW_AUTOSIZE );	// Create a window for display.
+//    namedWindow( "NORMALIZADA", WINDOW_AUTOSIZE);
+//    namedWindow( "HISTOGRAMA", WINDOW_AUTOSIZE );
+//    namedWindow( "PICOS_HISTOGRAMA", WINDOW_AUTOSIZE );
+//    namedWindow( "HISTOGRAMA", WINDOW_AUTOSIZE );
+//    namedWindow( "HISTOGRAMA", WINDOW_AUTOSIZE );
+//    namedWindow( "HISTOGRAMA", WINDOW_AUTOSIZE );
+    namedWindow( "PINTADA", CV_WINDOW_AUTOSIZE );
 
 //---------------------------------------------------------------------
 //---------------------------------------------------------------------
-
+    
 
 /*---------------------------------------------------------------------
  * 				CREACIÓN DE MATRICES
@@ -95,6 +102,10 @@ int main( int argc, char** argv )
     //Mat histograma_img;
     //Mat histograma_filtrado;
 
+    Mat pintada;
+    Mat original_color;
+    cvtColor(original, original_color, CV_GRAY2BGR);
+    pintada=original_color.clone();
 
 //---------------------------------------------------------------------
 //---------------------------------------------------------------------
@@ -103,9 +114,9 @@ int main( int argc, char** argv )
  * 				NORMALIZACIÓN
  ---------------------------------------------------------------------*/
 
-    normalize(original, normalizada, 0, 65535, NORM_MINMAX, -1);
+  //  normalize(original, normalizada, 0, 65535, NORM_MINMAX, -1);
     //original.convertTo(normalizada,CV_16UC1,65535.0/(10000 - 0), -0 * 65535.0/(10000 - 0));
-    imshow("NORMALIZADA",normalizada);
+    //imshow("NORMALIZADA",normalizada);
 
 
 //---------------------------------------------------------------------
@@ -120,14 +131,51 @@ int main( int argc, char** argv )
  * 	umbralización
  * 	comparación con caja de proporciones y/x
  *
- */
+
+ * */
+      imshow( "ORIGINAL", original ); 
+         waitKey(0);
+    // Pintura
+          srand(time(NULL)); 
+    vector < vector<int> > hist_value;
+    vector<int> valor;
+    valor.push_back(180);
+    valor.push_back(255);
+    hist_value.push_back(valor);
+    vector<int> valor1;
+    valor1.push_back(100);
+    valor1.push_back(180);
+    hist_value.push_back(valor1);
+    vector<int> valor2;
+    valor2.push_back(50);
+    valor2.push_back(100);
+    hist_value.push_back(valor2);
+    vector<int> valor3;
+    valor3.push_back(5);
+    valor3.push_back(50);
+    hist_value.push_back(valor3);
+    
+        string tipo3 = type2str(original_color.type());
+    cout << "\n La imagen original color es del tipo " << tipo3 << "\n" ;
+    pintar::Pintar(original_color, pintada, hist_value);
+    
+    string tipo2 = type2str(pintada.type());
+    cout << "\n La imagen pintada es del tipo " << tipo2 << "\n" ;
+    
+    imshow("PINTADA", pintada);
+    waitKey(0);
+//    hist_value[1][1]=100;
+//    hist_value[1][2]=200;
+
+    
+ 
 
  //   f_histograma(original, histograma);
 
 
   //  f_filtrado_histograma(histograma, histograma_filtrado);
 
-    f_histograma(normalizada);
+    //f_histograma(normalizada);
 
 
 
