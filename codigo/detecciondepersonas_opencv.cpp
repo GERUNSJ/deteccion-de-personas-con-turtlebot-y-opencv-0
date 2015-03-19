@@ -22,7 +22,7 @@
 using namespace cv;
 using namespace std;
 
---------------------------------------------
+//--------------------------------------------
 string type2str(int type) {
   string r;
 
@@ -63,7 +63,7 @@ int main( int argc, char** argv )
 
     if(! original.data )                       	// Check for invalid input
     {
-        cout <<  "\nNo se pudo abrir o encontrar la imagen." << std::endl ;
+        cout <<  "\nNo se pudo abrir o encontrar la imagen." << endl ;
         return -1;
     }
 
@@ -135,6 +135,39 @@ int main( int argc, char** argv )
 	printf("\n\n i*j = %ld\n\n",i*j);
 	printf("\nHay %ld valores no nulos.\n\n",nn);
 */
+    
+          imshow( "ORIGINAL", original ); 
+         waitKey(0);
+    // Pintura
+          srand(time(NULL)); 
+    vector < vector<int> > hist_value;
+    vector<int> valor;
+    valor.push_back(180);
+    valor.push_back(255);
+    hist_value.push_back(valor);
+    vector<int> valor1;
+    valor1.push_back(100);
+    valor1.push_back(180);
+    hist_value.push_back(valor1);
+    vector<int> valor2;
+    valor2.push_back(50);
+    valor2.push_back(100);
+    hist_value.push_back(valor2);
+    vector<int> valor3;
+    valor3.push_back(5);
+    valor3.push_back(50);
+    hist_value.push_back(valor3);
+    
+        string tipo3 = type2str(original_color.type());
+    cout << "\n La imagen original color es del tipo " << tipo3 << "\n" ;
+    pintar::Pintar(original_color, pintada, hist_value);
+    
+    string tipo2 = type2str(pintada.type());
+    cout << "\n La imagen pintada es del tipo " << tipo2 << "\n" ;
+    
+    imshow("PINTADA", pintada);
+    waitKey(0);
+    
 
     cout << "\n\nANTES DE NORMALIZAR:\n";
     f_histograma_log(original,histograma);
@@ -172,7 +205,7 @@ int main( int argc, char** argv )
 
   //  f_filtrado_histograma(histograma, histograma_filtrado);
 
-    f_histograma(normalizada);
+    //f_histograma(normalizada);
   cout << "\n\nDESPUES DE NORMALIZAR: \n";
 
     f_histograma_log(normalizada,histograma);
