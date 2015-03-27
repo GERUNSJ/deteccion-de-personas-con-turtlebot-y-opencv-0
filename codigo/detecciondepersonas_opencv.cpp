@@ -14,6 +14,7 @@
 #include <suavizar_histograma.hpp>
 #include <cstdio>
 #include <vector>
+#include "valles.hpp"
 #include <cstdlib>
 #include <Pintar.h>
 #include <stdlib.h> 
@@ -138,9 +139,13 @@ int main( int argc, char** argv )
     
           imshow( "ORIGINAL", original ); 
          waitKey(0);
+         
+         vector < vector<int> > hist_value;
+         srand(time(NULL)); 
     // Pintura
-          srand(time(NULL)); 
-    vector < vector<int> > hist_value;
+         
+    
+    /*vector < vector<int> > hist_value;
     vector<int> valor;
     valor.push_back(180);
     valor.push_back(255);
@@ -158,15 +163,8 @@ int main( int argc, char** argv )
     valor3.push_back(50);
     hist_value.push_back(valor3);
     
-        string tipo3 = type2str(original_color.type());
-    cout << "\n La imagen original color es del tipo " << tipo3 << "\n" ;
-    pintar::Pintar(original_color, pintada, hist_value);
-    
-    string tipo2 = type2str(pintada.type());
-    cout << "\n La imagen pintada es del tipo " << tipo2 << "\n" ;
-    
-    imshow("PINTADA", pintada);
-    waitKey(0);
+         */
+
     
 
     cout << "\n\nANTES DE NORMALIZAR:\n";
@@ -208,7 +206,8 @@ int main( int argc, char** argv )
     //f_histograma(normalizada);
   cout << "\n\nDESPUES DE NORMALIZAR: \n";
 
-    f_histograma_log(normalizada,histograma);
+    //f_histograma_log(normalizada,histograma);
+  f_histograma(normalizada,histograma);
     mostrar_histograma(histograma, (char*)"HISTOGRAMA");
 
 
@@ -217,18 +216,32 @@ int main( int argc, char** argv )
  ---------------------------------------------------------------------*/
 
     histograma_suavizado = histograma;
-    suavizar_histograma(histograma_suavizado, 3);
-    suavizar_histograma(histograma_suavizado, 3);
+    suavizar_histograma(histograma_suavizado,15);
+    suavizar_histograma(histograma_suavizado, 9);
+    //suavizar_histograma(histograma_suavizado, 9);
     mostrar_histograma(histograma_suavizado, (char*)"HISTOGRAMA_SUAVIZADO");
 
+    
 //---------------------------------------------------------------------
+    encontrar_valles(histograma_suavizado, hist_value);
 //---------------------------------------------------------------------
+
+    string tipo3 = type2str(original_color.type());
+    cout << "\n La imagen original color es del tipo " << tipo3 << "\n" ;
+    pintar::Pintar(original_color, pintada, hist_value);
+    
+    string tipo2 = type2str(pintada.type());
+    cout << "\n La imagen pintada es del tipo " << tipo2 << "\n" ;
+    
+    imshow("PINTADA", pintada);
+    waitKey(0);
 
 
     imshow( "ORIGINAL", original );                   	// Show our image inside it.
 
     waitKey(0);                                    	// Wait for a keystroke in the window
     return 0;
+    
 }
 
 
