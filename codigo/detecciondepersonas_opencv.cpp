@@ -60,7 +60,8 @@ int main( int argc, char** argv )
     }
 
     Mat original = imread(argv[1], -1);   		//El segundo argumento indica que la imagen se leera
-    original.convertTo(original, CV_8UC1, 255.0/65535,0);											//tal como viene, tenga los canales que tenga.
+    //original.convertTo(original, CV_8UC1, 255.0/65535,0);											//tal como viene, tenga los canales que tenga.
+
 
     if(! original.data )                       	// Check for invalid input
     {
@@ -68,10 +69,18 @@ int main( int argc, char** argv )
         return -1;
     }
 
+
+
     string tipo = type2str(original.type());
     cout << "La imagen abierta es del tipo " << tipo << "\n" ;
-//    if(original.channels()!= 1)
-//        cvtColor(original,original,CV_RGB2GRAY);
+
+    if (original.depth() == CV_16U)
+    {
+    	original.convertTo(original, CV_8UC1, 255.0/65535,0);
+    }
+
+    if(original.channels()!= 1)
+        cvtColor(original,original,CV_RGB2GRAY);
 //---------------------------------------------------------------------
 //---------------------------------------------------------------------
 
@@ -84,7 +93,7 @@ int main( int argc, char** argv )
     namedWindow( "NORMALIZADA", WINDOW_AUTOSIZE);
     namedWindow( "HISTOGRAMA", WINDOW_AUTOSIZE );
     namedWindow( "PICOS_HISTOGRAMA", WINDOW_AUTOSIZE );
-    namedWindow( "HISTOGRAMA", WINDOW_AUTOSIZE );
+    namedWindow( "HISTOGRAMA_ORIGINAL", WINDOW_AUTOSIZE );
     namedWindow( "HISTOGRAMA", WINDOW_AUTOSIZE );
     namedWindow( "HISTOGRAMA", WINDOW_AUTOSIZE );
     namedWindow( "PINTADA", CV_WINDOW_AUTOSIZE );
@@ -168,8 +177,8 @@ int main( int argc, char** argv )
     
 
     cout << "\n\nANTES DE NORMALIZAR:\n";
-    f_histograma_log(original,histograma);
-    mostrar_histograma(histograma, (char*)"HISTOGRAMA");
+    f_histograma(original,histograma);
+    mostrar_histograma(histograma, (char*)"HISTOGRAMA_ORIGINAL");
 
 
     if(original.depth() == CV_8U)
@@ -216,8 +225,8 @@ int main( int argc, char** argv )
  ---------------------------------------------------------------------*/
 
     histograma_suavizado = histograma;
-    suavizar_histograma(histograma_suavizado,15);
-    suavizar_histograma(histograma_suavizado, 9);
+    //suavizar_histograma(histograma_suavizado,3);
+    //suavizar_histograma(histograma_suavizado, 9);
     //suavizar_histograma(histograma_suavizado, 9);
     mostrar_histograma(histograma_suavizado, (char*)"HISTOGRAMA_SUAVIZADO");
 
