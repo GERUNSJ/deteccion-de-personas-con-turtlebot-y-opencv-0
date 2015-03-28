@@ -12,6 +12,9 @@
 #include <iostream>
 #include <histograma.hpp>
 #include <suavizar_histograma.hpp>
+#include <valles.hpp>
+#include <Pintar.hpp>
+#include <time.h>
 #include <cstdio>
 
 
@@ -49,6 +52,7 @@ string type2str(int type) {
 
 int main( int argc, char** argv )
 {
+	srand(time(NULL));
 /*---------------------------------------------------------------------
  * 				APERTURA DE LA IMAGEN
  ---------------------------------------------------------------------*/
@@ -89,7 +93,7 @@ int main( int argc, char** argv )
     namedWindow( "HISTOGRAMA", WINDOW_AUTOSIZE );
     namedWindow( "HISTOGRAMA_SUAVIZADO", WINDOW_AUTOSIZE);
     namedWindow( "PICOS_HISTOGRAMA", WINDOW_AUTOSIZE );
-
+    namedWindow( "PINTADA", CV_WINDOW_AUTOSIZE );
 
 //---------------------------------------------------------------------
 //---------------------------------------------------------------------
@@ -102,6 +106,11 @@ int main( int argc, char** argv )
     Mat normalizada;
     Mat histograma;
     Mat histograma_suavizado;
+    Mat pintada;
+    Mat original_color;
+
+
+
 
 
 //---------------------------------------------------------------------
@@ -141,10 +150,23 @@ int main( int argc, char** argv )
     f_histograma_log(original,histograma);
     mostrar_histograma(histograma, (char*)"HISTOGRAMA");
 
+    double minVal;
+    double maxVal=0;
 
     if(original.depth() == CV_8U)
     {
-        normalize(original, normalizada, 0, 255, NORM_MINMAX, -1);
+        //normalize(original, normalizada, 0, 255, NORM_MINMAX, -1);
+        normalizada = original.clone();
+        minMaxLoc(normalizada, &minVal, &maxVal, NULL, NULL, Mat() );
+        cout << "\nMin val es: " << minVal;
+        cout << "\nMax val es: " << maxVal;
+        cout << "\n255.0/(maxVal - minVal) es : " << 255.0/(maxVal - minVal);
+        //normalizada = normalizada - minVal;
+        //normalizada = normalizada * (255.0/(maxVal - minVal));
+        normalizada.convertTo(normalizada,CV_8UC1,255.0/(maxVal - minVal), -minVal * 255.0/(maxVal - minVal));
+        //C++: void minMaxLoc(InputArray src, double* minVal, double* maxVal=0, Point* minLoc=0, Point*
+        //maxLoc=0, InputArray mask=noArray())
+
     }
     else if (original.depth() == CV_16U)
     {
@@ -154,9 +176,13 @@ int main( int argc, char** argv )
     imshow("NORMALIZADA",normalizada);
     waitKey(0);
 
+    if (original.depth() == CV_16U)
+    {
+        normalize(original, normalizada, 0, 65535, NORM_MINMAX, -1);
+        //Conversión a 8 bits:
+        normalizada.convertTo(normalizada,CV_8UC1,255.0/65535, -0);
 
-    //Conversión a 8 bits:
-    normalizada.convertTo(normalizada,CV_8UC1,255.0/65535, -0);
+    }
     imshow("NORMALIZADA",normalizada);
 
 
@@ -195,6 +221,17 @@ int main( int argc, char** argv )
     cout << "\n\nDESPUES DE NORMALIZAR: \n";
 
     f_histograma_log(normalizada,histograma);
+
+    /*
+    for(int i=1;i<histograma.rows-1;i++)
+    {
+    	if ((histograma.at<float>(i) == 0) && (histograma.at<float>(i) == histograma.at<float>(i+1)))
+    	{
+    		histograma.at<float>(i) = histograma.at<float>(i-1);
+    	}
+    }
+    */
+
     mostrar_histograma(histograma, (char*)"HISTOGRAMA");
 
 
@@ -202,13 +239,46 @@ int main( int argc, char** argv )
  * 				SUAVIZADO DE HISTOGRAMA
  ---------------------------------------------------------------------*/
 
-    histograma_suavizado = histograma;
-    suavizar_histograma(histograma_suavizado, 3);
+    histograma_suavizado = histograma.clone();
+    suavizar_histograma(histograma_suavizado, 9);
+    suavizar_histograma(histograma_suavizado, 5);
+    suavizar_histograma(histograma_suavizado, 5);
     suavizar_histograma(histograma_suavizado, 3);
     mostrar_histograma(histograma_suavizado, (char*)"HISTOGRAMA_SUAVIZADO");
 
 //---------------------------------------------------------------------
 //---------------------------------------------------------------------
+
+
+/*---------------------------------------------------------------------
+ * 				VALLES
+ ---------------------------------------------------------------------*/
+
+    //std::vector<int> valles;
+    std::vector< std::vector<int> > pares;
+
+	/*for(int i=0; i < histograma_suavizado.rows ; i++)	//Del 1 al 254
+	{
+		cout << i << '=' << histograma_suavizado.at<float>(i) << "   ";
+	}
+	cout << "\n";*/
+
+    //valles = encontrar_valles(histograma_suavizado);
+    encontrar_valles(histograma_suavizado , pares);
+
+//---------------------------------------------------------------------
+//---------------------------------------------------------------------
+
+    cvtColor(normalizada, original_color, CV_GRAY2BGR);
+    pintada=original_color;
+
+    string tipo3 = type2str(original_color.type());
+    cout << "\n La imagen original color es del tipo " << tipo3 << "\n" ;
+    imshow( "PINTADA", original_color );
+    waitKey(0);
+    pintar::Pintar(original_color, pintada, pares);
+
+    imshow( "PINTADA", pintada );
 
 
     imshow( "ORIGINAL", original );                   	// Show our image inside it.
