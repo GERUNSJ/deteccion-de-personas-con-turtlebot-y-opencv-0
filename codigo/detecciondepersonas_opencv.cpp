@@ -54,7 +54,8 @@ string type2str(int type) {
 
 int main( int argc, char** argv )
 {
-	srand(time(NULL));
+	srand(time(NULL));	//Se usa para generar colores
+
 /*---------------------------------------------------------------------
  * 				APERTURA DE LA IMAGEN
  ---------------------------------------------------------------------*/
@@ -92,11 +93,9 @@ int main( int argc, char** argv )
 
     namedWindow( "ORIGINAL", WINDOW_AUTOSIZE );	// Create a window for display.
     namedWindow( "NORMALIZADA", WINDOW_AUTOSIZE);
-    namedWindow( "HISTOGRAMA", WINDOW_AUTOSIZE );
+    namedWindow( "HISTOGRAMA_NORMALIZADA", WINDOW_AUTOSIZE );
     namedWindow( "HISTOGRAMA_SUAVIZADO", WINDOW_AUTOSIZE);
     namedWindow( "PICOS_HISTOGRAMA", WINDOW_AUTOSIZE );
-    namedWindow( "HISTOGRAMA", WINDOW_AUTOSIZE );
-    namedWindow( "HISTOGRAMA", WINDOW_AUTOSIZE );
     namedWindow( "HISTOGRAMA", WINDOW_AUTOSIZE );
     namedWindow( "PINTADA", CV_WINDOW_AUTOSIZE );
 
@@ -114,8 +113,8 @@ int main( int argc, char** argv )
 
     Mat pintada;
     Mat original_color;
-    cvtColor(original, original_color, CV_GRAY2BGR);
-    pintada=original_color.clone();
+    //cvtColor(original, original_color, CV_GRAY2BGR);
+    //pintada=original_color.clone();
 
 //---------------------------------------------------------------------
 //---------------------------------------------------------------------
@@ -217,14 +216,6 @@ int main( int argc, char** argv )
  * 				NORMALIZACIÓN
  ---------------------------------------------------------------------*/
 
-
-//---------------------------------------------------------------------
-//---------------------------------------------------------------------
-
-
-/*---------------------------------------------------------------------
- * 				--
- ---------------------------------------------------------------------*/
 /*	histograma
  * 	ecualización
  * 	filtrado de histograma
@@ -253,7 +244,7 @@ int main( int argc, char** argv )
     }
     */
 
-    mostrar_histograma(histograma, (char*)"HISTOGRAMA");
+    mostrar_histograma(histograma, (char*)"HISTOGRAMA_NORMALIZADA");
 
 
 /*---------------------------------------------------------------------
@@ -290,8 +281,13 @@ int main( int argc, char** argv )
 //---------------------------------------------------------------------
 //---------------------------------------------------------------------
 
+
+/*---------------------------------------------------------------------
+ * 				IMAGEN PINTADA
+ ---------------------------------------------------------------------*/
+
     cvtColor(normalizada, original_color, CV_GRAY2BGR);
-    pintada=original_color;
+    pintada=original_color.clone();
 
     string tipo3 = type2str(original_color.type());
     cout << "\n La imagen original color es del tipo " << tipo3 << "\n" ;
@@ -301,11 +297,12 @@ int main( int argc, char** argv )
 
     imshow( "PINTADA", pintada );
 
-
-    imshow( "ORIGINAL", original );                   	// Show our image inside it.
-
     waitKey(0);                                    	// Wait for a keystroke in the window
     return 0;
+
+
+//---------------------------------------------------------------------
+
 }
 
 
