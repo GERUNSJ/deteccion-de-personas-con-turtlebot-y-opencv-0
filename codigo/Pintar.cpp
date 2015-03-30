@@ -28,7 +28,6 @@ namespace pintar
                 lut.at<cv::Vec3b>(i)=Objeto->devuelvocolor();
             }
             //delete Objeto;
-           // std::cout<<  lut.at<cv::Vec3b>(i) << std::endl;
             Objeto->~Color();
         }
         cv::LUT(src,lut,dst,0);

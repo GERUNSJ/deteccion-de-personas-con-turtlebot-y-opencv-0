@@ -17,13 +17,13 @@
 #include "valles.hpp"
 #include <cstdlib>
 #include <Pintar.h>
-#include <stdlib.h> 
+//#include <stdlib.h>
 #include <time.h> 
 
 using namespace cv;
 using namespace std;
 
-//--------------------------------------------
+//--------------------------------------------------------------
 string type2str(int type) {
   string r;
 
@@ -46,10 +46,15 @@ string type2str(int type) {
 
   return r;
 }
+
 //----------------------------------------
+
+
+
 
 int main( int argc, char** argv )
 {
+	srand(time(NULL));
 /*---------------------------------------------------------------------
  * 				APERTURA DE LA IMAGEN
  ---------------------------------------------------------------------*/
@@ -59,19 +64,24 @@ int main( int argc, char** argv )
      return -1;
     }
 
-    Mat original = imread(argv[1], -1);   		//El segundo argumento indica que la imagen se leera
-    original.convertTo(original, CV_8UC1, 255.0/65535,0);											//tal como viene, tenga los canales que tenga.
+    Mat original;
+    original = imread(argv[1], -1);   		//El segundo argumento indica que la imagen se leera
+    											//tal como viene, tenga los canales que tenga.
 
     if(! original.data )                       	// Check for invalid input
     {
-        cout <<  "\nNo se pudo abrir o encontrar la imagen." << endl ;
+        cout <<  "\nNo se pudo abrir o encontrar la imagen." << std::endl ;
         return -1;
     }
 
     string tipo = type2str(original.type());
-    cout << "La imagen abierta es del tipo " << tipo << "\n" ;
-//    if(original.channels()!= 1)
-//        cvtColor(original,original,CV_RGB2GRAY);
+    cout << "\nLa imagen abierta es del tipo " << tipo << "\n" ;
+
+    //Conversión a un canal
+    if(original.channels() != 1)
+    {
+    	cvtColor(original, original, CV_RGB2GRAY);
+    }
 //---------------------------------------------------------------------
 //---------------------------------------------------------------------
 
@@ -80,9 +90,10 @@ int main( int argc, char** argv )
  * 				CREACIÓN DE VENTANAS
  ---------------------------------------------------------------------*/
 
-    namedWindow( "ORIGINAL", CV_WINDOW_AUTOSIZE );	// Create a window for display.
+    namedWindow( "ORIGINAL", WINDOW_AUTOSIZE );	// Create a window for display.
     namedWindow( "NORMALIZADA", WINDOW_AUTOSIZE);
     namedWindow( "HISTOGRAMA", WINDOW_AUTOSIZE );
+    namedWindow( "HISTOGRAMA_SUAVIZADO", WINDOW_AUTOSIZE);
     namedWindow( "PICOS_HISTOGRAMA", WINDOW_AUTOSIZE );
     namedWindow( "HISTOGRAMA", WINDOW_AUTOSIZE );
     namedWindow( "HISTOGRAMA", WINDOW_AUTOSIZE );
@@ -108,6 +119,8 @@ int main( int argc, char** argv )
 
 //---------------------------------------------------------------------
 //---------------------------------------------------------------------
+
+
 
 /*---------------------------------------------------------------------
  * 				NORMALIZACIÓN
@@ -136,15 +149,15 @@ int main( int argc, char** argv )
 	printf("\n\n i*j = %ld\n\n",i*j);
 	printf("\nHay %ld valores no nulos.\n\n",nn);
 */
-    
-          imshow( "ORIGINAL", original ); 
+
+          imshow( "ORIGINAL", original );
          waitKey(0);
-         
+
          vector < vector<int> > hist_value;
-         srand(time(NULL)); 
+         srand(time(NULL));
     // Pintura
-         
-    
+
+
     /*vector < vector<int> > hist_value;
     vector<int> valor;
     valor.push_back(180);
@@ -162,10 +175,10 @@ int main( int argc, char** argv )
     valor3.push_back(5);
     valor3.push_back(50);
     hist_value.push_back(valor3);
-    
+
          */
 
-    
+
 
     cout << "\n\nANTES DE NORMALIZAR:\n";
     f_histograma_log(original,histograma);
@@ -182,10 +195,33 @@ int main( int argc, char** argv )
     }
     //original.convertTo(normalizada,CV_16UC1,65535.0/(10000 - 0), -0 * 65535.0/(10000 - 0));
     imshow("NORMALIZADA",normalizada);
+    waitKey(0);
+
+    if (original.depth() == CV_16U)
+    {
+        normalize(original, normalizada, 0, 65535, NORM_MINMAX, -1);
+        //Conversión a 8 bits:
+        normalizada.convertTo(normalizada,CV_8UC1,255.0/65535, -0);
+
+    }
+    imshow("NORMALIZADA",normalizada);
+
 
 
 //---------------------------------------------------------------------
 //---------------------------------------------------------------------
+
+
+
+/*---------------------------------------------------------------------
+ * 				NORMALIZACIÓN
+ ---------------------------------------------------------------------*/
+
+
+//---------------------------------------------------------------------
+//---------------------------------------------------------------------
+
+
 /*---------------------------------------------------------------------
  * 				--
  ---------------------------------------------------------------------*/
@@ -203,11 +239,20 @@ int main( int argc, char** argv )
 
   //  f_filtrado_histograma(histograma, histograma_filtrado);
 
-    //f_histograma(normalizada);
-  cout << "\n\nDESPUES DE NORMALIZAR: \n";
+    cout << "\n\nDESPUES DE NORMALIZAR: \n";
 
-    //f_histograma_log(normalizada,histograma);
-  f_histograma(normalizada,histograma);
+    f_histograma_log(normalizada,histograma);
+
+    /*
+    for(int i=1;i<histograma.rows-1;i++)
+    {
+    	if ((histograma.at<float>(i) == 0) && (histograma.at<float>(i) == histograma.at<float>(i+1)))
+    	{
+    		histograma.at<float>(i) = histograma.at<float>(i-1);
+    	}
+    }
+    */
+
     mostrar_histograma(histograma, (char*)"HISTOGRAMA");
 
 
@@ -215,33 +260,53 @@ int main( int argc, char** argv )
  * 				SUAVIZADO DE HISTOGRAMA
  ---------------------------------------------------------------------*/
 
-    histograma_suavizado = histograma;
-    suavizar_histograma(histograma_suavizado,15);
+    histograma_suavizado = histograma.clone();
     suavizar_histograma(histograma_suavizado, 9);
-    //suavizar_histograma(histograma_suavizado, 9);
+    suavizar_histograma(histograma_suavizado, 5);
+    suavizar_histograma(histograma_suavizado, 5);
+    suavizar_histograma(histograma_suavizado, 3);
     mostrar_histograma(histograma_suavizado, (char*)"HISTOGRAMA_SUAVIZADO");
 
-    
 //---------------------------------------------------------------------
-    encontrar_valles(histograma_suavizado, hist_value);
 //---------------------------------------------------------------------
+
+
+/*---------------------------------------------------------------------
+ * 				VALLES
+ ---------------------------------------------------------------------*/
+
+    //std::vector<int> valles;
+    std::vector< std::vector<int> > pares;
+
+	/*for(int i=0; i < histograma_suavizado.rows ; i++)	//Del 1 al 254
+	{
+		cout << i << '=' << histograma_suavizado.at<float>(i) << "   ";
+	}
+	cout << "\n";*/
+
+    //valles = encontrar_valles(histograma_suavizado);
+    encontrar_valles(histograma_suavizado , pares);
+
+//---------------------------------------------------------------------
+//---------------------------------------------------------------------
+
+    cvtColor(normalizada, original_color, CV_GRAY2BGR);
+    pintada=original_color;
 
     string tipo3 = type2str(original_color.type());
     cout << "\n La imagen original color es del tipo " << tipo3 << "\n" ;
-    pintar::Pintar(original_color, pintada, hist_value);
-    
-    string tipo2 = type2str(pintada.type());
-    cout << "\n La imagen pintada es del tipo " << tipo2 << "\n" ;
-    
-    imshow("PINTADA", pintada);
+    imshow( "PINTADA", original_color );
     waitKey(0);
+    pintar::Pintar(original_color, pintada, pares);
+
+    imshow( "PINTADA", pintada );
 
 
     imshow( "ORIGINAL", original );                   	// Show our image inside it.
 
     waitKey(0);                                    	// Wait for a keystroke in the window
     return 0;
-    
 }
+
 
 
