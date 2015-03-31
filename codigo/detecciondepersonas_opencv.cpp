@@ -263,8 +263,7 @@ int main( int argc, char** argv )
 
     
 //---------------------------------------------------------------------
-    encontrar_valles(histograma_suavizado, hist_value);
-//---------------------------------------------------------------------
+
 
 
 /*---------------------------------------------------------------------
@@ -291,7 +290,7 @@ int main( int argc, char** argv )
  * 				IMAGEN PINTADA
  ---------------------------------------------------------------------*/
 pintar::Color *vectorColor;
-    vectorColor = new pintar::Color[hist_value.size()];
+    vectorColor = new pintar::Color[pares.size()];
     //pintar::Color vectorColor[hist_value.size()];
 
 
