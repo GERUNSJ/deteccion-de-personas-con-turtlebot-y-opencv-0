@@ -9,6 +9,7 @@
 
 //Para 8 bits.
 
+
 void encontrar_valles(cv::Mat& histograma, std::vector< std::vector<int> > &pares) {
     std::vector<int> par;
     std::vector<int>::iterator it1;
