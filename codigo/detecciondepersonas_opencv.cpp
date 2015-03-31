@@ -17,13 +17,13 @@
 #include "valles.hpp"
 #include <cstdlib>
 #include <Pintar.h>
-//#include <stdlib.h>
+#include <stdlib.h> 
 #include <time.h> 
 
 using namespace cv;
 using namespace std;
 
-//--------------------------------------------------------------
+//--------------------------------------------
 string type2str(int type) {
   string r;
 
@@ -71,7 +71,7 @@ int main( int argc, char** argv )
 
     if(! original.data )                       	// Check for invalid input
     {
-        cout <<  "\nNo se pudo abrir o encontrar la imagen." << std::endl ;
+        cout <<  "\nNo se pudo abrir o encontrar la imagen." << endl ;
         return -1;
     }
 
@@ -96,6 +96,8 @@ int main( int argc, char** argv )
     namedWindow( "HISTOGRAMA_NORMALIZADA", WINDOW_AUTOSIZE );
     namedWindow( "HISTOGRAMA_SUAVIZADO", WINDOW_AUTOSIZE);
     namedWindow( "PICOS_HISTOGRAMA", WINDOW_AUTOSIZE );
+    namedWindow( "HISTOGRAMA", WINDOW_AUTOSIZE );
+    namedWindow( "HISTOGRAMA", WINDOW_AUTOSIZE );
     namedWindow( "HISTOGRAMA", WINDOW_AUTOSIZE );
     namedWindow( "PINTADA", CV_WINDOW_AUTOSIZE );
 
@@ -148,15 +150,15 @@ int main( int argc, char** argv )
 	printf("\n\n i*j = %ld\n\n",i*j);
 	printf("\nHay %ld valores no nulos.\n\n",nn);
 */
-
-          imshow( "ORIGINAL", original );
+    
+          imshow( "ORIGINAL", original ); 
          waitKey(0);
-
-         vector < vector<int> > hist_value;
-         srand(time(NULL));
+         
+     //    vector < vector<int> > hist_value;
+        // srand(time(NULL)); 
     // Pintura
-
-
+         
+    
     /*vector < vector<int> > hist_value;
     vector<int> valor;
     valor.push_back(180);
@@ -174,10 +176,10 @@ int main( int argc, char** argv )
     valor3.push_back(5);
     valor3.push_back(50);
     hist_value.push_back(valor3);
-
+    
          */
 
-
+    
 
     cout << "\n\nANTES DE NORMALIZAR:\n";
     f_histograma_log(original,histograma);
@@ -230,7 +232,8 @@ int main( int argc, char** argv )
 
   //  f_filtrado_histograma(histograma, histograma_filtrado);
 
-    cout << "\n\nDESPUES DE NORMALIZAR: \n";
+    //f_histograma(normalizada);
+  cout << "\n\nDESPUES DE NORMALIZAR: \n";
 
     f_histograma_log(normalizada,histograma);
 
@@ -258,7 +261,9 @@ int main( int argc, char** argv )
     suavizar_histograma(histograma_suavizado, 3);
     mostrar_histograma(histograma_suavizado, (char*)"HISTOGRAMA_SUAVIZADO");
 
+    
 //---------------------------------------------------------------------
+    encontrar_valles(histograma_suavizado, hist_value);
 //---------------------------------------------------------------------
 
 
@@ -285,25 +290,27 @@ int main( int argc, char** argv )
 /*---------------------------------------------------------------------
  * 				IMAGEN PINTADA
  ---------------------------------------------------------------------*/
+pintar::Color *vectorColor;
+    vectorColor = new pintar::Color[hist_value.size()];
+    //pintar::Color vectorColor[hist_value.size()];
+
 
     cvtColor(normalizada, original_color, CV_GRAY2BGR);
     pintada=original_color.clone();
 
     string tipo3 = type2str(original_color.type());
     cout << "\n La imagen original color es del tipo " << tipo3 << "\n" ;
-    imshow( "PINTADA", original_color );
+    pintar::Pintar(original_color, pintada, pares, vectorColor);
+    
+    string tipo2 = type2str(pintada.type());
+    cout << "\n La imagen pintada es del tipo " << tipo2 << "\n" ;
+    
+    imshow("PINTADA", pintada);
     waitKey(0);
-    pintar::Pintar(original_color, pintada, pares);
 
-    imshow( "PINTADA", pintada );
-
-    waitKey(0);                                    	// Wait for a keystroke in the window
+                   
     return 0;
-
-
-//---------------------------------------------------------------------
-
+    
 }
-
 
 
