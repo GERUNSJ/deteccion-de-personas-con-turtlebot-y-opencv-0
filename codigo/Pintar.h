@@ -27,14 +27,14 @@ namespace pintar
         Color();
         ~Color();
         void generocolor();
-        friend Color& operator= (const Color&);
-        friend int operator!= (const Color&, const Color&);
+         Color& operator= (const Color&);
+        //int operator!= (const Color&, const Color&);
         cv::Point3_<uchar> devuelvocolor(void);
         void setcolor(cv::Point3_<uchar>);
 
         Color(cv::Point3_<uchar>);
     };
-    void Pintar(const cv::Mat &src, cv::Mat &dst, std::vector<std::vector<int> > LimiteEObjeto, Color vectorColor);
+    void Pintar(const cv::Mat &src, cv::Mat &dst, std::vector<std::vector<int> > LimiteEObjeto, Color *vectorColor);
     
 
 }

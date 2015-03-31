@@ -225,8 +225,9 @@ int main( int argc, char** argv )
 //---------------------------------------------------------------------
     encontrar_valles(histograma_suavizado, hist_value);
 //---------------------------------------------------------------------
-     pintar.Color *vectorColor;
-     vectorColor = new pintar.Color[hist_value.size()];
+    pintar::Color *vectorColor;
+    vectorColor = new pintar::Color[hist_value.size()];
+    //pintar::Color vectorColor[hist_value.size()];
 
     string tipo3 = type2str(original_color.type());
     cout << "\n La imagen original color es del tipo " << tipo3 << "\n" ;

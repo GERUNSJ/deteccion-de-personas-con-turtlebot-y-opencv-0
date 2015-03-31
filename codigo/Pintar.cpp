@@ -11,7 +11,7 @@
 uchar d;
 namespace pintar
 {
-    void Pintar(const cv::Mat &src, cv::Mat &dst, std::vector<std::vector<int> > LimiteEObjeto, Color vectorColor[])
+    void Pintar(const cv::Mat &src, cv::Mat &dst, std::vector<std::vector<int> > LimiteEObjeto, Color *vectorColor)
     {        
         int dim = 256;
         cv::Mat lut(1, dim, CV_8UC(dst.channels()));
@@ -29,8 +29,8 @@ namespace pintar
             }
             //delete Objeto;
            // std::cout<<  lut.at<cv::Vec3b>(i) << std::endl;
-            Objeto.~Color();
             vectorColor[j] = Objeto;
+            Objeto.~Color();
         }
         //delete Objeto;
         cv::LUT(src,lut,dst,0);
@@ -40,18 +40,17 @@ namespace pintar
     {
     
     }
-    Color& Color::operator= (const Color &cd){
-        if (*this != cd)
+    Color& Color::operator= (const Color& cd){
+        //if (*this != cd)
             color = cd.color;
         return *this;
-            
-    }
+    }/*
     int Color::operator!= (const Color& c1, const Color& c2){
         if(c1.color == c2.color)
             return 0;
         else
             return 1;
-    }
+    }*/
     
     cv::Point3_<uchar> Color::devuelvocolor()
     {
@@ -59,7 +58,6 @@ namespace pintar
     }
     void Color::generocolor()
     {
-       
         color = cv::Point3_<uchar>(rand()%255 , rand()%255, rand()%255);
     }
     Color::~Color()
