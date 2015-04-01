@@ -7,12 +7,15 @@
 //#include <iostream>
 
 #include <cstdio>
+#include <Pintar.h>
+
 
 #ifndef HISTOGRAMA_HPP_
 #define HISTOGRAMA_HPP_
 
 using namespace cv;
 using namespace std;
+using namespace pintar;
 
 #define V_HIST_ANCHO	640		//El ancho de la ventana del histograma.
 #define V_HIST_ALTO		480
@@ -29,12 +32,15 @@ void f_histograma_log(const Mat& img, Mat& hist);
  *	y es más fácil de visualizar.
  *
  */
-void mostrar_histograma(const Mat& hist_original, char* nombreventana);
+void mostrar_histograma(const Mat& hist_original, Mat& img_hist, char* nombreventana);
 /*	Dibuja el histograma con líneas en una imagen de tamaño definido por las constantes
  * 	V_HIST_ANCHO y V_HIST_ALTO. Antes de dibujar, los histogramas se resizean al tamaño
  * 	de la ventana.
  *
  */
+
+void pintar_histograma(const Mat& img_hist_original, Mat& img_hist_pintada, Color *vectorColor, int cantidad);
+
 
 string type2str(int type);
 
@@ -194,12 +200,12 @@ void f_histograma_log(const Mat& img , Mat& hist)
 
 
 
-void mostrar_histograma(const Mat& hist_original, char* nombreventana)
+void mostrar_histograma(const Mat& hist_original, Mat& hist_img, char* nombreventana)
 {
 
     //string tipo = type2str(hist_original.type());
     //cout << "\nEl histograma es del tipo " << tipo << "\n" ;
-	Mat hist = hist_original;
+	Mat hist = hist_original.clone();
 
 
     int histSize = V_HIST_ANCHO;
@@ -301,6 +307,8 @@ void mostrar_histograma(const Mat& hist_original, char* nombreventana)
     imshow( nombreventana, histImage );
 
     waitKey(0);
+
+    hist_img = histImage.clone();
 }
 
 #endif /* HISTOGRAMA_HPP_ */
@@ -372,3 +380,63 @@ void mostrar_histograma(const Mat& hist_original, char* nombreventana)
 }
 */
 
+
+
+
+
+
+
+void pintar_histograma(const Mat& img_hist_original, Mat& img_hist_pintada, Color *vectorColor, int cantidad)
+{
+	int i = 0;	//Índice segmentos
+	int j = 0;	//Índice ancho segmento
+	int k = 0;	//Índice pixeles imagen
+	int l = 0;	//Longitud línea
+	int ancho = 0;
+	Point3_<uchar> color(0, 0, 0);
+	//Point punto_1 = (0,0);
+	//Point punto_2 = (0,0);
+	Scalar_<double> colorScalar(0, 0, 0);
+	Vec3b rojo(0,0,255);
+	Vec3b punto;
+
+
+	img_hist_pintada = img_hist_original.clone();
+	cout << "\nEl histograma_pintado tiene " << img_hist_pintada.rows << " filas y " << img_hist_pintada.cols << " columnas.\n";
+
+	ancho = round(V_HIST_ANCHO / 256);
+
+	for( i = 0; i < cantidad-1 ; i ++ )	//Para cada segmento, menos el último
+	{
+		color = vectorColor[i].devuelvocolor();
+		colorScalar[0] = color.x;
+		colorScalar[1] = color.y;
+		colorScalar[2] = color.z;
+
+		for( j = 0; j < ancho ; j++)
+		{
+			punto = img_hist_pintada.at< Vec3b >(k,l);
+			while(img_hist_pintada.at< Vec3b >(k,l) == Vec3b(0, 0, 0))
+			{
+				l++;
+			}
+			l++;
+			line(img_hist_pintada, Point(k,0), Point(k,l), colorScalar, 2, 8, 0 );
+			k++;
+			l = 0;
+		}
+	}
+	//último
+	while( k < V_HIST_ANCHO )
+	{
+		while(img_hist_pintada.at< Vec3b >(k,l) == Vec3b(0, 0, 0))
+		{
+			l++;
+		}
+		l++;
+		line(img_hist_pintada, Point(k,0), Point(k,l), colorScalar, 2, 8, 0 );
+		k++;
+	}
+	cout << "\nAhora el histograma_pintado tiene " << img_hist_pintada.rows << " filas y " << img_hist_pintada.cols << " columnas.\n";
+
+}

@@ -33,6 +33,8 @@ namespace pintar
         void setcolor(cv::Point3_<uchar>);
 
         Color(cv::Point3_<uchar>);
+
+        //operator cv::Point3_() {return color;} //No anda
     };
     void Pintar(const cv::Mat &src, cv::Mat &dst, std::vector<std::vector<int> > LimiteEObjeto, Color *vectorColor);
     

@@ -96,7 +96,7 @@ int main( int argc, char** argv )
     namedWindow( "HISTOGRAMA_NORMALIZADA", WINDOW_AUTOSIZE );
     namedWindow( "HISTOGRAMA_SUAVIZADO", WINDOW_AUTOSIZE);
     namedWindow( "PICOS_HISTOGRAMA", WINDOW_AUTOSIZE );
-    namedWindow( "HISTOGRAMA", WINDOW_AUTOSIZE );
+    namedWindow( "HISTOGRAMA_PINTADO", WINDOW_AUTOSIZE );
     namedWindow( "HISTOGRAMA", WINDOW_AUTOSIZE );
     namedWindow( "HISTOGRAMA", WINDOW_AUTOSIZE );
     namedWindow( "PINTADA", CV_WINDOW_AUTOSIZE );
@@ -112,6 +112,10 @@ int main( int argc, char** argv )
     Mat normalizada;
     Mat histograma;
     Mat histograma_suavizado;
+    Mat img_histograma;
+    Mat img_histograma_s;
+    Mat img_histograma_0;
+    Mat img_histograma_pintado;
 
     Mat pintada;
     Mat original_color;
@@ -182,8 +186,8 @@ int main( int argc, char** argv )
     
 
     cout << "\n\nANTES DE NORMALIZAR:\n";
-    f_histograma_log(original,histograma);
-    mostrar_histograma(histograma, (char*)"HISTOGRAMA");
+    f_histograma(original,histograma);
+    mostrar_histograma(histograma, img_histograma_0, (char*)"HISTOGRAMA");
 
 
     if(original.depth() == CV_8U)
@@ -235,7 +239,7 @@ int main( int argc, char** argv )
     //f_histograma(normalizada);
   cout << "\n\nDESPUES DE NORMALIZAR: \n";
 
-    f_histograma_log(normalizada,histograma);
+    f_histograma(normalizada,histograma);
 
     /*
     for(int i=1;i<histograma.rows-1;i++)
@@ -247,7 +251,7 @@ int main( int argc, char** argv )
     }
     */
 
-    mostrar_histograma(histograma, (char*)"HISTOGRAMA_NORMALIZADA");
+    mostrar_histograma(histograma, img_histograma, (char*)"HISTOGRAMA_NORMALIZADA");
 
 
 /*---------------------------------------------------------------------
@@ -257,9 +261,9 @@ int main( int argc, char** argv )
     histograma_suavizado = histograma.clone();
     suavizar_histograma(histograma_suavizado, 9);
     suavizar_histograma(histograma_suavizado, 5);
-    suavizar_histograma(histograma_suavizado, 5);
-    suavizar_histograma(histograma_suavizado, 3);
-    mostrar_histograma(histograma_suavizado, (char*)"HISTOGRAMA_SUAVIZADO");
+    //suavizar_histograma(histograma_suavizado, 5);
+    //suavizar_histograma(histograma_suavizado, 3);
+    mostrar_histograma(histograma_suavizado, img_histograma_s,(char*)"HISTOGRAMA_SUAVIZADO");
 
     
 //---------------------------------------------------------------------
@@ -306,7 +310,11 @@ pintar::Color *vectorColor;
     
     imshow("PINTADA", pintada);
     waitKey(0);
-    pintar::Pintar(original_color, pintada, pares);
+
+
+    pintar_histograma(img_histograma_s, img_histograma_pintado, vectorColor, pares.size());
+    imshow("HISTOGRAMA_PINTADO", img_histograma_pintado);
+    waitKey(0);
 
                    
     return 0;
