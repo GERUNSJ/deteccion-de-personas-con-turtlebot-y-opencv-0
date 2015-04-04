@@ -312,7 +312,7 @@ pintar::Color *vectorColor;
     waitKey(0);
 
 
-    pintar_histograma(img_histograma_s, img_histograma_pintado, vectorColor, pares.size());
+    pintar_histograma(img_histograma_s, img_histograma_pintado, pares, vectorColor);
     imshow("HISTOGRAMA_PINTADO", img_histograma_pintado);
     waitKey(0);
 
