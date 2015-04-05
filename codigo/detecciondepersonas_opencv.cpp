@@ -261,7 +261,7 @@ int main( int argc, char** argv )
     histograma_suavizado = histograma.clone();
     suavizar_histograma(histograma_suavizado, 9);
     suavizar_histograma(histograma_suavizado, 5);
-    //suavizar_histograma(histograma_suavizado, 5);
+    suavizar_histograma(histograma_suavizado, 5);
     //suavizar_histograma(histograma_suavizado, 3);
     mostrar_histograma(histograma_suavizado, img_histograma_s,(char*)"HISTOGRAMA_SUAVIZADO");
 

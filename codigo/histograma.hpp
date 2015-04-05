@@ -536,9 +536,9 @@ void pintar_histograma(const Mat& img_hist_original, Mat& img_hist_pintada, std:
 	Point3_<uchar> color(0, 0, 0);
 	//Point punto_1 = (0,0);
 	//Point punto_2 = (0,0);
-	Scalar_<double> colorScalar(0, 0, 0);
-	Vec3b rojo(0,0,255);
-	Vec3b punto;
+	Scalar_<uchar> colorScalar(0, 0, 0);
+	//Vec3b rojo(0,0,255);
+	//Vec3b punto;
 	//int cantidad = pares.size();
 
 
@@ -559,28 +559,30 @@ void pintar_histograma(const Mat& img_hist_original, Mat& img_hist_pintada, std:
 	cout << "\nEl histograma_pintado tiene " << img_hist_pintada.rows << " filas y " << img_hist_pintada.cols << " columnas.\n";
 
 	ancho_bin = cvRound((double) V_HIST_ANCHO / 256);
-	cout << "Ancho_bin = " << ancho_bin << endl;
+	//cout << "Ancho_bin = " << ancho_bin << endl;
 
-	{
+	/*{
 		cout << "-" << (img_hist_pintada.at<Vec3b>(0,0))[0] << endl;
 		cout << "-" << (img_hist_pintada.at<Vec3b>(0,0))[1] << endl;
 		cout << "-" << (img_hist_pintada.at<Vec3b>(0,0))[2] << endl;
-	}
+	}*/
 
 
 	for( it1 = pares.begin(); it1 != pares.end(); it1++)	//Para cada par
 	{
-		color = vectorColor[i].devuelvocolor();
-		colorScalar[0] = color.x;
-		colorScalar[1] = color.y;
-		colorScalar[2] = color.z;
+		color = vectorColor[distance(pares.begin(),it1)].devuelvocolor();
+		colorScalar.val[0] = color.x;
+		colorScalar.val[1] = color.y;
+		colorScalar.val[2] = color.z;
+
+		//cout << "asdasdassd" << colorScalar << endl;
 
 		do
 		{
 			for( k = 0; k < ancho_bin ; k++ )	//Para todos los pixeles del bin
 			{
 				//while( img_hist_pintada.at<Vec3b>(j,l) == Vec3b(0,0,0))
-				if( img_hist_pintada.at<Vec3b>(V_HIST_ALTO-1, j) != Vec3b(0,0,0) )
+				if( img_hist_pintada.at<Vec3b>(V_HIST_ALTO-1, j) != Vec3b(0,0,0) )	//Si el primero no es cero.
 				{
 					l = 0;
 				}
@@ -597,10 +599,10 @@ void pintar_histograma(const Mat& img_hist_original, Mat& img_hist_pintada, std:
 
 					}
 				}
-				if( l == V_HIST_ALTO-1 && img_hist_pintada.at<Vec3b>(0, j) == Vec3b(0,0,0))
+				if( l == V_HIST_ALTO-1 && img_hist_pintada.at<Vec3b>(0, j) == Vec3b(0,0,0))	// Si son todos nulos.
 					l = 0;
 				//l++;
-				cout << "L es " << l << endl;
+				//cout << "L es " << l << endl;
 				//waitKey(0);
 				//cout << img_hist_pintada.at<Vec3b>(V_HIST_ALTO-1-l, j).val[0] << endl;
 				//cout << l++ << endl;
@@ -623,6 +625,7 @@ void pintar_histograma(const Mat& img_hist_original, Mat& img_hist_pintada, std:
 				break;
 			}
 		} while ( i != ((std::vector<int>)*it1)[1]);	//Hasta el segundo elemento del par.
+		//i++;
 	}
 
 

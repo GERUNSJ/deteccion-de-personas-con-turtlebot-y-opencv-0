@@ -60,7 +60,11 @@ namespace pintar
     {
        
         color = cv::Point3_<uchar>(rand()%255 , rand()%255, rand()%255);
-        std::cout << color << std::endl;
+        /*{
+        	std::cout << (int)color.x << " ";
+        	std::cout << (int)color.y << " ";
+        	std::cout << (int)color.z << std::endl;
+        }*/
     }
     Color::~Color()
     {
