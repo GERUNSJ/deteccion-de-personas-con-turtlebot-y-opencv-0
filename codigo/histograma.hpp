@@ -17,7 +17,7 @@ using namespace cv;
 using namespace std;
 using namespace pintar;
 
-#define V_HIST_ANCHO	640		//El ancho de la ventana del histograma.
+#define V_HIST_ANCHO	512		//El ancho de la ventana del histograma. Múltiṕlo entero de 256 para facilitar el pintado
 #define V_HIST_ALTO		480
 
 //------------------------------------------------------------------------------
@@ -385,6 +385,146 @@ void mostrar_histograma(const Mat& hist_original, Mat& hist_img, char* nombreven
 
 
 
+//void pintar_histograma(const Mat& img_hist_original, Mat& img_hist_pintada, std::vector< std::vector<int> > pares, Color *vectorColor)
+//{
+//	std::vector< std::vector<int> >::iterator it1;	//índice pares
+//	int i = 0;	//Índice bins
+//	int j = 0;	//Índice pixeles imagen
+//	int k = 0;	//Índice pixels bin
+//	int l = 0;	//Longitud línea
+//	int ancho_bin = 0;
+//	Point3_<uchar> color(0, 0, 0);
+//	//Point punto_1 = (0,0);
+//	//Point punto_2 = (0,0);
+//	Scalar_<double> colorScalar(0, 0, 0);
+//	Vec3b rojo(0,0,255);
+//	Vec3b punto;
+//	//int cantidad = pares.size();
+//
+//
+//
+//	img_hist_pintada = img_hist_original.clone();
+//
+//	/*
+//	if (img_hist_pintada.rows > 256)
+//	{
+//		resize(img_hist_pintada, img_hist_pintada, Size(1,V_HIST_ANCHO), 0 ,0, INTER_AREA);		//Interpolación por área para reducir la imagen. Se come el valor en 0 pero no lo necesitamos..
+//	}
+//	else if(img_hist_pintada.rows < 256)
+//	{
+//		resize(img_hist_pintada, img_hist_pintada, Size(1,V_HIST_ANCHO), 0 ,0, INTER_LINEAR);	//Interpolación lineal para agrandar la imagen.
+//	}/*
+//
+//	cout << "\nEl histograma_pintado tiene " << img_hist_pintada.rows << " filas y " << img_hist_pintada.cols << " columnas.\n";
+//
+//	ancho_bin = cvRound((double) V_HIST_ANCHO / 256);
+//	cout << "Ancho_bin = " << ancho_bin << endl;
+//
+//	{
+//		cout << "-" << (img_hist_pintada.at<Vec3b>(0,0))[0] << endl;
+//		cout << "-" << (img_hist_pintada.at<Vec3b>(0,0))[1] << endl;
+//		cout << "-" << (img_hist_pintada.at<Vec3b>(0,0))[2] << endl;
+//	}
+//
+//
+//	for( it1 = pares.begin(); it1 != pares.end(); it1++)	//Para cada par
+//	{
+//		color = vectorColor[i].devuelvocolor();
+//		colorScalar[0] = color.x;
+//		colorScalar[1] = color.y;
+//		colorScalar[2] = color.z;
+//
+//		do
+//		{
+//			for( k = 0; k < ancho_bin ; k++ )	//Para todos los pixeles del bin
+//			{
+//				//while( img_hist_pintada.at<Vec3b>(j,l) == Vec3b(0,0,0))
+//				if( img_hist_pintada.at<Vec3b>(V_HIST_ALTO-1, j) != Vec3b(0,0,0) )
+//				{
+//					l = 0;
+//				}
+//				else
+//				{
+//					while( img_hist_pintada.at<Vec3b>(V_HIST_ALTO-1-l, j) == Vec3b(0,0,0) && l < V_HIST_ALTO-1)
+//					{
+//						/*cout << (img_hist_pintada.at<Vec3b>(V_HIST_ALTO-1-l, j)[0]) << " " <<
+//								(img_hist_pintada.at<Vec3b>(V_HIST_ALTO-1-l, j)[1]) << " " <<
+//								(img_hist_pintada.at<Vec3b>(V_HIST_ALTO-1-l, j)[2]) << endl;*/
+//						//waitKey(0);
+//						//cout << l++ << endl;
+//						l++;
+//
+//					}
+//				}
+//				if( l == V_HIST_ALTO-1 )
+//					l = 0;
+//				//l++;
+//				//cout << "L es " << l << endl;
+//				//waitKey(0);
+//				//cout << img_hist_pintada.at<Vec3b>(V_HIST_ALTO-1-l, j).val[0] << endl;
+//				//cout << l++ << endl;
+//
+//				//line(img_hist_pintada, Point(j,0), Point(j,l), colorScalar, 2, 8, 0 );
+//				//line(img_hist_pintada, Point(V_HIST_ALTO-1,j), Point((V_HIST_ALTO-1+l),j), colorScalar, 2, 8, 0 );
+//				//line(img_hist_pintada, Point(j,0), Point(j,V_HIST_ALTO-1-l), colorScalar, 2, 8, 0 );
+//				//line(img_hist_pintada, Point(V_HIST_ALTO-1,j), Point(V_HIST_ALTO-1-l,j), colorScalar, 2, 8, 0 );
+//				line(img_hist_pintada, Point(j,V_HIST_ALTO-1), Point(j,V_HIST_ALTO-1-l), colorScalar, 1, 8, 0 );
+//				l = 0;
+//				j++;
+//			}
+//
+//			i++;
+//			if ( j == V_HIST_ANCHO-1)
+//			{
+//				cout << "J pasado" << endl;
+//				break;
+//			}
+//		} while ( i != ((std::vector<int>)*it1)[1]);	//Hasta el segundo elemento del par.
+//	}
+//	//Para cada bin
+//
+//	/*
+//	for( i = 0; i < cantidad-1 ; i ++ )	//Para cada segmento, menos el último
+//	{
+//		color = vectorColor[i].devuelvocolor();
+//		colorScalar[0] = color.x;
+//		colorScalar[1] = color.y;
+//		colorScalar[2] = color.z;
+//
+//		for( j = 0; j < ancho ; j++)
+//		{
+//			punto = img_hist_pintada.at< Vec3b >(k,l);
+//			while(img_hist_pintada.at< Vec3b >(k,l) == Vec3b(0, 0, 0))
+//			{
+//				l++;
+//			}
+//			l++;
+//			line(img_hist_pintada, Point(k,0), Point(k,l), colorScalar, 2, 8, 0 );
+//			k++;
+//			l = 0;
+//		}
+//	}
+//	//último
+//	while( k < V_HIST_ANCHO )
+//	{
+//		while(img_hist_pintada.at< Vec3b >(k,l) == Vec3b(0, 0, 0))
+//		{
+//			l++;
+//		}
+//		l++;
+//		line(img_hist_pintada, Point(k,0), Point(k,l), colorScalar, 2, 8, 0 );
+//		k++;
+//	}
+//	*/
+//	//cout << "\nAhora el histograma_pintado tiene " << img_hist_pintada.rows << " filas y " << img_hist_pintada.cols << " columnas.\n";
+//
+//
+//	{
+//		line(img_hist_pintada, Point(600, 20), Point(630, V_HIST_ALTO-1), Scalar(255,255,255), 1, 8 , 0);
+//	}
+//
+//}
+
 void pintar_histograma(const Mat& img_hist_original, Mat& img_hist_pintada, std::vector< std::vector<int> > pares, Color *vectorColor)
 {
 	std::vector< std::vector<int> >::iterator it1;	//índice pares
@@ -404,6 +544,17 @@ void pintar_histograma(const Mat& img_hist_original, Mat& img_hist_pintada, std:
 
 
 	img_hist_pintada = img_hist_original.clone();
+
+
+	// Vamos
+	/*if (img_hist_pintada.rows > 256)
+	{
+		resize(img_hist_pintada, img_hist_pintada, Size(1,V_HIST_ANCHO), 0 ,0, INTER_AREA);		//Interpolación por área para reducir la imagen. Se come el valor en 0 pero no lo necesitamos..
+	}
+	else if(img_hist_pintada.rows < 256)
+	{
+		resize(img_hist_pintada, img_hist_pintada, Size(1,V_HIST_ANCHO), 0 ,0, INTER_LINEAR);	//Interpolación lineal para agrandar la imagen.
+	}*/
 
 	cout << "\nEl histograma_pintado tiene " << img_hist_pintada.rows << " filas y " << img_hist_pintada.cols << " columnas.\n";
 
@@ -446,10 +597,10 @@ void pintar_histograma(const Mat& img_hist_original, Mat& img_hist_pintada, std:
 
 					}
 				}
-				if( l == V_HIST_ALTO-1 )
+				if( l == V_HIST_ALTO-1 && img_hist_pintada.at<Vec3b>(0, j) == Vec3b(0,0,0))
 					l = 0;
 				//l++;
-				//cout << "L es " << l << endl;
+				cout << "L es " << l << endl;
 				//waitKey(0);
 				//cout << img_hist_pintada.at<Vec3b>(V_HIST_ALTO-1-l, j).val[0] << endl;
 				//cout << l++ << endl;
@@ -460,7 +611,9 @@ void pintar_histograma(const Mat& img_hist_original, Mat& img_hist_pintada, std:
 				//line(img_hist_pintada, Point(V_HIST_ALTO-1,j), Point(V_HIST_ALTO-1-l,j), colorScalar, 2, 8, 0 );
 				line(img_hist_pintada, Point(j,V_HIST_ALTO-1), Point(j,V_HIST_ALTO-1-l), colorScalar, 1, 8, 0 );
 				l = 0;
+				//cout << "j = " << j << endl;
 				j++;
+
 			}
 
 			i++;
@@ -471,42 +624,6 @@ void pintar_histograma(const Mat& img_hist_original, Mat& img_hist_pintada, std:
 			}
 		} while ( i != ((std::vector<int>)*it1)[1]);	//Hasta el segundo elemento del par.
 	}
-	//Para cada bin
-
-	/*
-	for( i = 0; i < cantidad-1 ; i ++ )	//Para cada segmento, menos el último
-	{
-		color = vectorColor[i].devuelvocolor();
-		colorScalar[0] = color.x;
-		colorScalar[1] = color.y;
-		colorScalar[2] = color.z;
-
-		for( j = 0; j < ancho ; j++)
-		{
-			punto = img_hist_pintada.at< Vec3b >(k,l);
-			while(img_hist_pintada.at< Vec3b >(k,l) == Vec3b(0, 0, 0))
-			{
-				l++;
-			}
-			l++;
-			line(img_hist_pintada, Point(k,0), Point(k,l), colorScalar, 2, 8, 0 );
-			k++;
-			l = 0;
-		}
-	}
-	//último
-	while( k < V_HIST_ANCHO )
-	{
-		while(img_hist_pintada.at< Vec3b >(k,l) == Vec3b(0, 0, 0))
-		{
-			l++;
-		}
-		l++;
-		line(img_hist_pintada, Point(k,0), Point(k,l), colorScalar, 2, 8, 0 );
-		k++;
-	}
-	*/
-	//cout << "\nAhora el histograma_pintado tiene " << img_hist_pintada.rows << " filas y " << img_hist_pintada.cols << " columnas.\n";
 
 
 	{
